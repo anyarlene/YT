@@ -1,8 +1,10 @@
 import os
+import json
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
 import requests
+from datetime import datetime
 
 # Airtable API credentials
 AIRTABLE_API_KEY = os.environ.get('AIRTABLE_API_KEY')
@@ -46,29 +48,34 @@ def get_channel_statistics(channel_id):
     # Retrieve the channel statistics
     request = youtube.channels().list(
         id=channel_id,
-        part='statistics'
+        part='snippet, statistics'
     )
     response = request.execute()
 
     # Extract the channel statistics
     statistics = response['items'][0]['statistics']
+    profile = response['items'][0]['snippet']
+    return statistics, profile
 
-    return statistics
-
+# Open the singers JSON file and load the data
+with open('bdi_singers.json', 'r') as f:
+    data = json.load(f)
 
 # Get the channel ID and statistics for each singer
-singers = ['Adele', 'Ed Sheeran', 'Taylor Swift']
+singers = data['singers']
 for singer in singers:
     channel_id = get_channel_id(singer)
     statistics = get_channel_statistics(channel_id)
-
+    profile = get_channel_statistics(channel_id)
     # Build the Airtable record
     record = {
         'Name': singer,
+        'Thumbnail' : profile['thumbnails']['default']['url'],
         'Channel ID': channel_id,
         'Subscribers': statistics['subscriberCount'],
         'Views': statistics['viewCount'],
-        'Videos': statistics['videoCount']
+        'Videos': statistics['videoCount'],
+        'CreationTime': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
     }
 
     # Insert the record into the Airtable table
