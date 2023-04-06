@@ -11,10 +11,12 @@ load_dotenv()
 YT_API_KEY = os.getenv('YT_API_KEY')
 AIRTABLE_API_KEY = os.getenv('AIRTABLE_API_KEY')
 AIRTABLE_BASE_ID = os.getenv('AIRTABLE_BASE_ID')
+API_SERVICE_NAME = "youtube"
+API_VERSION = "v3"
 
 # Define a function to get the YouTube channel statistics for a given channel ID
 def get_channel_data(channel_id):
-    youtube = build('youtube', 'v3', developerKey=YT_API_KEY)
+    youtube = build(API_SERVICE_NAME, API_VERSION , developerKey=YT_API_KEY)
 
     # Get the channel statistics using the channel ID
     request = youtube.channels().list(
