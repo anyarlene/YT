@@ -30,7 +30,8 @@ def get_channel_data(channel_id):
         'subscriber_count': response['items'][0]['statistics']['subscriberCount'],
         'profile_picture': response['items'][0]['snippet']['thumbnails']['default']['url'],
         'view_count': response['items'][0]['statistics']['viewCount'],
-        'video_count': response['items'][0]['statistics']['videoCount']
+        'video_count': response['items'][0]['statistics']['videoCount'],
+        'published_at': response['items'][0]['snippet']['publishedAt']
     }
     return data
 
@@ -38,22 +39,29 @@ def get_channel_data(channel_id):
 with open('burundian_singer_channel_ids.json', 'r') as f:
     channels = json.load(f)
 
-# Loop through each channel and get the statistics
-for singer, channel_id in channels.items():
-    try:
-        # Get the channel data
-        channel_data = get_channel_data(channel_id)
+# Create a list of tuples with singer name and subscriber count
+channel_list = [(singer, int(get_channel_data(channel_id)['subscriber_count'])) for singer, channel_id in channels.items()]
 
+# Sort the list by subscriber count in descending order
+channel_list.sort(key=lambda x: x[1], reverse=True)
+
+# Add rank to each tuple
+ranked_list = [(i+1, singer, subs) for i, (singer, subs) in enumerate(channel_list)]
+
+# Loop through each channel and add the data to the Airtable base
+for rank, singer, subs in ranked_list:
+    try:
         # Prepare the data for the Airtable API
         data = {
-            
             'fields': {
-                'Singer': singer,
-                'Profile Picture': [{'url': channel_data['profile_picture']}],
-                'Subscribers': int(channel_data['subscriber_count']),
-                'Views': int(channel_data['view_count']),
-                'Videos': int(channel_data['video_count']),
-                'createdTime': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                'Rank': rank,
+                'Artist': singer,
+                'Thumbnail': [{'url': get_channel_data(channels[singer])['profile_picture']}],
+                'Subscribers': subs,
+                'Views': int(get_channel_data(channels[singer])['view_count']),
+                'Videos': int(get_channel_data(channels[singer])['video_count']),
+                'PublishedTime': get_channel_data(channels[singer])['published_at']
+                ##'createdTime': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
             }
         }
 
@@ -71,3 +79,4 @@ for singer, channel_id in channels.items():
 
     except HttpError as e:
         print(f'Error getting statistics for {singer}: {e}')
+
