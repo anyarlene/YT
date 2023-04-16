@@ -9,7 +9,7 @@ from datetime import datetime
 # Load the API keys and Airtable credentials from the .env file
 load_dotenv()
 YT_API_KEY = os.getenv('YT_API_KEY')
-AIRTABLE_API_KEY = os.getenv('AIRTABLE_API_KEY')
+AIRTABLE_ACCESS_TOKEN = os.getenv('AIRTABLE_ACCESS_TOKEN')
 AIRTABLE_BASE_ID = os.getenv('AIRTABLE_BASE_ID')
 API_SERVICE_NAME = "youtube"
 API_VERSION = "v3"
@@ -61,14 +61,14 @@ for rank, singer, subs in ranked_list:
                 'Views': int(get_channel_data(channels[singer])['view_count']),
                 'Videos': int(get_channel_data(channels[singer])['video_count']),
                 'PublishedTime': get_channel_data(channels[singer])['published_at']
-                ##'createdTime': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                ##'CreatedTime': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
             }
         }
 
         # Make a POST request to the Airtable API to add the data to the base
         url = f'https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/Table%201'
         headers = {
-            'Authorization': f'Bearer {AIRTABLE_API_KEY}',
+            'Authorization': f'Bearer {AIRTABLE_ACCESS_TOKEN}',
             'Content-Type': 'application/json'
         }
         response = requests.post(url, headers=headers, json=data)
@@ -79,4 +79,3 @@ for rank, singer, subs in ranked_list:
 
     except HttpError as e:
         print(f'Error getting statistics for {singer}: {e}')
-
