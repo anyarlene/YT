@@ -36,7 +36,7 @@ def get_channel_data(channel_id):
     return data
 
 # Open the channels JSON file and load the data
-with open('burundian_singer_channel_ids.json', 'r') as f:
+with open('channel-id-data/burundian_singer_channel_ids.json', 'r') as f:
     channels = json.load(f)
 
 # Create a list of tuples with singer name and subscriber count

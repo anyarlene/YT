@@ -44,5 +44,5 @@ for singer in singers:
         print(f'Error getting channel ID for {singer}: {e}')
 
 # Save the channels dictionary to a new JSON file
-with open('burundian_singer_channel_ids.json', 'w') as f:
+with open('channel-id-data/burundian_singer_channel_ids.json', 'w') as f:
     json.dump(channels, f)
