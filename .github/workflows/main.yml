@@ -1,9 +1,9 @@
-name: Scheduled YouTube Script Run
+name: Scheduled YouTube Stats Job
 
 on:
   schedule:
     # This will run the workflow every day at midnight
-    - cron:  '58 21 * * *'
+    - cron:  '*/5 * * * *'
 
 jobs:
   build:
