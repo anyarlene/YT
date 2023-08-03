@@ -3,7 +3,7 @@ name: Scheduled YouTube Stats Job
 on:
   schedule:
     # This will run the workflow every day at midnight
-    - cron:  '*/5 * * * *'
+    - cron:  '5 * * * *'
 
 jobs:
   build:
