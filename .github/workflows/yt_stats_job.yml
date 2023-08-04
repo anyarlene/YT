@@ -1,36 +1,36 @@
-name: Scheduled YouTube Stats Job
+name: YouTube Statistics Job
 
 on:
   schedule:
-    # This will run the workflow every day at midnight
-    - cron:  '*/5 * * * *'
+    # Executes every 5 minutes
+    - cron: '*/5 * * * *'
 
 jobs:
-  build:
+  statistics:
 
     runs-on: ubuntu-latest
 
     steps:
-    - name: Setup Node.js environment
+    - name: Prepare Node.js 16 Environment
       uses: actions/setup-node@v2
       with:
         node-version: '16'
         
-    - uses: actions/checkout@v2
+    - name: Checkout Code
+      uses: actions/checkout@v2
     
-    - name: Set up Python
+    - name: Prepare Python 3.9.6 Environment
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'  # Adjust as necessary
+        python-version: '3.9.6'  # Adjust as necessary
 
-    - name: Install dependencies
+    - name: Install Python Dependencies
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         
-    - name: Execute YouTube stats script
-      run: |
-        python ./yt_statistics_airtable.py 
+    - name: Run YouTube Statistics Script
+      run: python ./yt_statistics_airtable.py
       env:
         YT_API_KEY: ${{ secrets.YT_API_KEY }}
         AIRTABLE_ACCESS_TOKEN: ${{ secrets.AIRTABLE_ACCESS_TOKEN }}
