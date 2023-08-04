@@ -3,7 +3,7 @@ name: Scheduled YouTube Stats Job
 on:
   schedule:
     # This will run the workflow every day at midnight
-    - cron:  '0 0 * * *'
+    - cron:  '*/5 * * * *'
 
 jobs:
   build:
@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        
     - uses: actions/checkout@v2
     
     - name: Set up Python
