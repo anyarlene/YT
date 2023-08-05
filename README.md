@@ -27,7 +27,8 @@ AIRTABLE_BASE_ID='Your Airtable Base ID'
 ```
 1. In the 'channel-id-data' folder, add a JSON file named 'burundian_singer_channel_ids.json' which contains a dictionary where the keys are the names of the channels you are interested in and the values are the corresponding channel IDs. The format should look like this:
 
-```{
+```
+{
     "Channel Name 1": "Channel ID 1",
     "Channel Name 2": "Channel ID 2",
     ...
@@ -35,7 +36,7 @@ AIRTABLE_BASE_ID='Your Airtable Base ID'
 ```
 
 # Scheduled Job
-The script is automated to run periodically using a scheduler. The schedule for the job is defined in the `yt_stats.job.yml` This ensures that the Airtable data is consistently updated without manual intervention.
+The script is automated to run periodically (every day at midnight) using a scheduler. The schedule for the job is defined in the `yt_stats.job.yml` This ensures that the Airtable data is consistently updated without manual intervention.
 
 # Earnings Estimation
 The potential earnings of a channel are estimated based on the channel's view count and a given range for the CPM (Cost Per Mille). The CPM represents how much money an advertiser is willing to pay for a thousand views of their advertisement.
