@@ -14,13 +14,14 @@ This script fetches, calculates, and records the statistics and potential earnin
 - Required Python packages: json, os, requests, googleapiclient, dotenv, datetime
 To install these packages, use pip:
 
-```pip install requests google-auth google-auth-httplib2 google-auth-oauthlib google-api-python-client oauthlib six python-dotenv``````
+```pip install requests google-auth google-auth-httplib2 google-auth-oauthlib google-api-python-client oauthlib six python-dotenv```
 
 # Configuration
 1. Clone this repository to your local machine.
 2. Create a .env file in your project root and add your YouTube API Key, Airtable Access Token and Airtable Base ID as shown below:
 
-```YT_API_KEY='Your YouTube API Key'
+```
+YT_API_KEY='Your YouTube API Key'
 AIRTABLE_ACCESS_TOKEN='Your Airtable Access Token'
 AIRTABLE_BASE_ID='Your Airtable Base ID'
 ```
