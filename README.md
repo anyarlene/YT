@@ -34,12 +34,6 @@ AIRTABLE_BASE_ID='Your Airtable Base ID'
     ...
 }
 ```
-
-# About the estimated_earnings Script 
-The script `update_estimated_earnings.py` calculates the estimated earnings for the YouTube channels, considering the difference in video views between the current and previous timestamps. The earnings are calculated per artist based on this difference.
-
-The script follows a methodology of fetching records from a source Airtable, processing the data, and then updating or adding new records to a target Airtable. The process ensures that new records added to the source are reflected in the target, and existing records are updated as necessary.
-
 # Scheduled Jobs
 #### YouTube Statistics Job
 The main script `yt_statistics_airtable.py` is automated to run periodically (every day at midnight) using a scheduler. The schedule for this job is defined in the yt_stats.job.yml. This ensures that the Airtable data is consistently updated without manual intervention.
@@ -53,4 +47,8 @@ Both jobs work in tandem to ensure the data remains up-to-date and accurate in t
 The potential earnings of a channel are estimated based on the channel's view count and a given range for the CPM (Cost Per Mille). The CPM represents how much money an advertiser is willing to pay for a thousand views of their advertisement.
 
 In this script, we estimate earnings using an average CPM of $1.00 (or $0.001 per view). This is a conservative estimate and the actual CPM can range widely from $0.25 to $4.00 and even higher. The exact CPM depends on many factors including video content, viewer demographics, individual contract terms, etc. Please note that these estimates are potential earnings and actual earnings can vary significantly based on the factors mentioned above.
+
+The script `update_estimated_earnings.py` calculates the estimated earnings for the YouTube channels, considering the difference in video views between the current and previous timestamps. The earnings are calculated per artist based on this difference.
+
+The script follows a methodology of fetching records from a source Airtable, processing the data, and then updating or adding new records to a target Airtable. The process ensures that new records added to the source are reflected in the target, and existing records are updated as necessary.
 
