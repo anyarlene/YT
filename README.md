@@ -35,8 +35,19 @@ AIRTABLE_BASE_ID='Your Airtable Base ID'
 }
 ```
 
-# Scheduled Job
-The script is automated to run periodically (every day at midnight) using a scheduler. The schedule for the job is defined in the `yt_stats.job.yml` This ensures that the Airtable data is consistently updated without manual intervention.
+# About the estimated_earnings Script 
+The script `update_estimated_earnings.py` calculates the estimated earnings for the YouTube channels, considering the difference in video views between the current and previous timestamps. The earnings are calculated per artist based on this difference.
+
+The script follows a methodology of fetching records from a source Airtable, processing the data, and then updating or adding new records to a target Airtable. The process ensures that new records added to the source are reflected in the target, and existing records are updated as necessary.
+
+# Scheduled Jobs
+#### YouTube Statistics Job
+The main script `yt_statistics_airtable.py` is automated to run periodically (every day at midnight) using a scheduler. The schedule for this job is defined in the yt_stats.job.yml. This ensures that the Airtable data is consistently updated without manual intervention.
+
+#### Estimated Earnings Update Job
+The `update_estimated_earnings.py` script is scheduled to run every day at 6 a.m. to ensure that the earnings estimates are consistently updated. This job fetches the new records from the source and processes them to update or add new records to the target Airtable base. The schedule for this job is defined in the `estimated_earnings.job.yml`.
+
+Both jobs work in tandem to ensure the data remains up-to-date and accurate in the target Airtable.
 
 # Earnings Estimation
 The potential earnings of a channel are estimated based on the channel's view count and a given range for the CPM (Cost Per Mille). The CPM represents how much money an advertiser is willing to pay for a thousand views of their advertisement.
