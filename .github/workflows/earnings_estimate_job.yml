@@ -1,0 +1,38 @@
+name: Scheduled Airtable Sync
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # This will run the script every day at midnight. Adjust the cron schedule as needed.
+
+jobs:
+  sync_job:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+        
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests pandas python-dotenv
+
+    - name: Run the script
+      run: python update_estimated_earnings.py
+      env:
+        AIRTABLE_ACCESS_TOKEN: ${{ secrets.AIRTABLE_ACCESS_TOKEN }}
+        TARGET_AIRTABLE_ACCESS_TOKEN: ${{ secrets.TARGET_AIRTABLE_ACCESS_TOKEN }}
+        AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+        TARGET_AIRTABLE_BASE_ID: ${{ secrets.TARGET_AIRTABLE_BASE_ID }}
+        SOURCE_TABLE_NAME: ${{ secrets.SOURCE_TABLE_NAME }}
+        TARGET_TABLE_NAME: ${{ secrets.TARGET_TABLE_NAME }}
