@@ -2,7 +2,7 @@ name: Scheduled Airtable Sync
 
 on:
   schedule:
-    - cron: '*/5 * * * '  # This will run the script every day at midnight. Adjust the cron schedule as needed.
+    - cron: '0 6 * * *'  # This will run the script every day at 6 a.m.
 
 jobs:
   sync_job:
