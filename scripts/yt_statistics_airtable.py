@@ -8,22 +8,15 @@ from datetime import datetime
 
 # Load the API keys and Airtable credentials from the .env file
 load_dotenv()
-
-# Constants
 YT_API_KEY = os.getenv('YT_API_KEY')
 AIRTABLE_ACCESS_TOKEN = os.getenv('AIRTABLE_ACCESS_TOKEN')
 AIRTABLE_BASE_ID = os.getenv('AIRTABLE_BASE_ID')
 API_SERVICE_NAME = "youtube"
 API_VERSION = "v3"
-MIN_CPM = 0.25 / 1000
-MAX_CPM = 4.00 / 1000
-ENDPOINT_URL = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/Table 1 copy copy"
-HEADERS = {
-    "Authorization": f"Bearer {AIRTABLE_ACCESS_TOKEN}",
-    "Content-Type": "application/json"
-}
 
+# Define a function to get the YouTube channel statistics for a given channel ID
 def get_channel_data(channel_id):
+    # Initialize dictionary to store data
     data = {}
     youtube = build(API_SERVICE_NAME, API_VERSION, developerKey=YT_API_KEY)
 
@@ -33,10 +26,12 @@ def get_channel_data(channel_id):
             part='snippet, statistics'
         )
         response = request.execute()
+
+        # Get the publishedAt string from the response and format it to 'YYYY-MM-DD'
         published_date = datetime.fromisoformat(response['items'][0]['snippet']['publishedAt'].rstrip('Z')).strftime('%Y-%m-%d')
+
         data = {
             'subscriber_count': response['items'][0]['statistics']['subscriberCount'],
-            'profile_picture': response['items'][0]['snippet']['thumbnails']['default']['url'],
             'view_count': response['items'][0]['statistics']['viewCount'],
             'video_count': response['items'][0]['statistics']['videoCount'],
             'published_at': published_date
@@ -46,10 +41,6 @@ def get_channel_data(channel_id):
 
     return data
 
-def calculate_earnings_range(view_count, days):
-    min_earnings = int(view_count) * MIN_CPM / days
-    max_earnings = int(view_count) * MAX_CPM / days
-    return min_earnings, max_earnings
 
 with open('channel-id-data/burundian_singer_channel_ids.json', 'r') as f:
     channels = json.load(f)
@@ -58,46 +49,44 @@ channel_list = [(singer, int(get_channel_data(channel_id)['subscriber_count'])) 
 channel_list.sort(key=lambda x: x[1], reverse=True)
 ranked_list = [(i+1, singer, subs) for i, (singer, subs) in enumerate(channel_list)]
 
+record_ids = {}
+
 for rank, singer, subs in ranked_list:
     channel_data = get_channel_data(channels[singer])
-    creation_timestamp = datetime.now()
+    creation_timestamp = datetime.now() # it's a datetime object here for calculations
     published_date = datetime.strptime(channel_data['published_at'], '%Y-%m-%d')
     days = (creation_timestamp - published_date).days
-    min_earnings, max_earnings = calculate_earnings_range(channel_data['view_count'], days)
-    earnings_estimate = f"${round(min_earnings)} - ${round(max_earnings)}"
-
-    # Logic for new_estimated_earnings
-    views_difference = int(channel_data['view_count']) 
-    min_earnings_new = views_difference * MIN_CPM
-    max_earnings_new = views_difference * MAX_CPM
-    new_earnings_estimate = f"${round(min_earnings_new)} - ${round(max_earnings_new)}"
-
     data = {
         'fields': {
             'rank': rank,
             'artist': singer,
-            'thumbnail': [{'url': channel_data['profile_picture']}],
             'subscribers': subs,
             'video_views': int(channel_data['view_count']),
             'video_count': int(channel_data['video_count']),
             'published_date': channel_data['published_at'],
-            'creation_timestamp': creation_timestamp.strftime('%Y-%m-%d %H:%M:%S'),
-            'estimated_earnings': earnings_estimate,
-            'new_estimated_earnings': new_earnings_estimate
+            'creation_timestamp': creation_timestamp.strftime('%Y-%m-%d %H:%M:%S'), # convert to string just before JSON serialization,
         }
     }
 
-    response = requests.post(ENDPOINT_URL, headers=HEADERS, json=data)
-    if response.status_code == 200:
+    # Make a POST request to the Airtable API to add the data to the base
+    url = f'https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/Table%201'
+    headers = {
+        'Authorization': f'Bearer {AIRTABLE_ACCESS_TOKEN}',
+        'Content-Type': 'application/json'
+    }
+    response = requests.post(url, headers=headers, json=data)
+
+    if response.status_code == 200: # successful creation
         record_id = response.json()['id']
-        url = f"{ENDPOINT_URL}/{record_id}"
+        # Update the new field 'record_id_ref' with the generated record_id
+        url = f'https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/Table%201/{record_id}'
         data = {
             'fields': {
                 'record_id_ref': record_id
             }
         }
-        response = requests.patch(url, headers=HEADERS, json=data)
-        if response.status_code == 200:
+        response = requests.patch(url, headers=headers, json=data)
+        if response.status_code == 200: # successful update
             print(f"Record for singer {singer} was created and updated successfully.")
         else:
             print(f"Failed to update record for singer {singer}: {response.text}")

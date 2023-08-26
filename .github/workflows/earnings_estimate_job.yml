@@ -28,7 +28,7 @@ jobs:
         pip install requests pandas python-dotenv
 
     - name: Run the script
-      run: python update_estimated_earnings.py
+      run: python scripts/update_estimated_earnings.py
       env:
         AIRTABLE_ACCESS_TOKEN: ${{ secrets.AIRTABLE_ACCESS_TOKEN }}
         TARGET_AIRTABLE_ACCESS_TOKEN: ${{ secrets.TARGET_AIRTABLE_ACCESS_TOKEN }}
