@@ -30,7 +30,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         
     - name: Run YouTube Statistics Script
-      run: python ./yt_statistics_airtable.py
+      run: python scripts/yt_statistics_airtable.py
       env:
         YT_API_KEY: ${{ secrets.YT_API_KEY }}
         AIRTABLE_ACCESS_TOKEN: ${{ secrets.AIRTABLE_ACCESS_TOKEN }}

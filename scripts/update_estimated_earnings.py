@@ -88,13 +88,11 @@ target_ids_set = set(target_df['record_id_ref'].tolist())
 
 # Iterate over the processed records and update or create in the target table
 for _, row in df.iterrows():
-    thumbnail_url = row.get('thumbnail', [{}])[0].get('url') if row.get('thumbnail', None) else None
     payload = {
         "fields": {
             "record_id_ref": row.get('record_id_ref', None),
             "rank": row.get('rank', None),
             "artist": row.get('artist', None),
-            "thumbnail": [{"url": thumbnail_url}] if thumbnail_url else [],
             "subscribers": row.get('subscribers', None),
             "video_views": row.get('video_views', None),
             "video_count": row.get('video_count', None),
