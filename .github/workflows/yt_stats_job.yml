@@ -2,8 +2,8 @@ name: YouTube Statistics Job
 
 on:
   schedule:
-    # This will run the workflow every day at 1 a.m.
-    - cron:  '0 1 * * *'
+    # This will run the workflow every day at 1 p.m.
+    - cron:  '0 13 * * *'
 
 jobs:
   statistics:
