@@ -25,7 +25,7 @@ def get_channel_id(singer_name):
     request = youtube.search().list(q=singer_name, type='channel', part='id,snippet')
     response = request.execute()
     channel_id = response['items'][0]['id']['channelId']
-    channel_thumbnail = response['items'][0]['snippet']['thumbnails']['default']['url']
+    channel_thumbnail = [{'url': response['items'][0]['snippet']['thumbnails']['default']['url']}]
     return channel_id, channel_thumbnail
 
 def get_latest_video(channel_id):
@@ -50,7 +50,7 @@ def get_latest_video(channel_id):
         ).execute()
         
         views = video_details['items'][0]['statistics']['viewCount']
-        video_thumbnail = video_details['items'][0]['snippet']['thumbnails']['default']['url']
+        video_thumbnail = [{'url': video_details['items'][0]['snippet']['thumbnails']['default']['url']}]
         
         return {
             'video_id': video_id,
@@ -80,17 +80,18 @@ for singer in singers:
         
         if latest_video:
             current_timestamp = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.000Z')  # ISO 8601 format
+            published_date_latest_video = datetime.strptime(latest_video['published_at'], '%Y-%m-%d')
             data = {
                 "fields": {
                     "channel_id": channel_id,
                     "video_id": latest_video['video_id'],
                     "latest_video": latest_video['title'],
-                    "latest_video_views": latest_video['video_views'],
+                    "latest_video_views": int(latest_video['video_views']),
                     "published_date_latest_video": latest_video['published_at'],
                     "artist": singer,
                     "channel_thumbnail": channel_thumbnail,
                     "video_thumbnail": latest_video['thumbnail'],
-                    "creation_timestamp": current_timestamp
+                    "creation_timestamp": current_timestamp.strftime('%Y-%m-%d %H:%M:%S'), # convert to string just before JSON serialization,
                 }
             }
 
