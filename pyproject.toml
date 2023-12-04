@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+name = "YT"
+version = "0.1.0"
+description = "A project for YouTube data modeling and processing"
+author = "Your Name"
+author_email = "anyarlene.niyubahwe@hotmail.com"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.extras_require]
+test = ["unittest"]
